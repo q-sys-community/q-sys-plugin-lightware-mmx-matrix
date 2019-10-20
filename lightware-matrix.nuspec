@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!-- Initially generated manually using `nuget spec`-->
+<package >
+  <metadata>
+    <id>lightware-matrix</id>
+    <version>0.0.1</version>
+    <title>Lightware Matrix</title>
+    <authors>Sam Shelton</authors>
+    <owners>Solo Works London</owners>
+    <licenseUrl>https://www.gnu.org/licenses/gpl-3.0.en.html</licenseUrl>
+    <projectUrl>https://lightware.com/</projectUrl>
+    <iconUrl>http://content/images/brand-logo-128px.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Package description</description>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>Copyright 2019</copyright>
+    <tags>Lightware Matrix</tags>
+    <summary>A control plugin for Lightware matrix devices</summary>
+    <dependencies>
+      <!--<dependency id="SampleDependency" version="1.0" />-->
+    </dependencies>
+  </metadata>
+</package>
