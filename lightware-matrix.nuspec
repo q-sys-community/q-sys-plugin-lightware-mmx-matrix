@@ -18,6 +18,7 @@
     <summary>A control plugin for Lightware matrix devices</summary>
   </metadata>
   <files>
-    <file src="content\**" target="content" />
+    <file src="content\*" target="" />
+    <file src="content\images\*" target="" />
   </files>
 </package>
