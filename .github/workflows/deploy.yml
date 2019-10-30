@@ -23,10 +23,10 @@ jobs:
         $QPLUG = (Get-ChildItem -Path "content" -Include *.qplug -Force -Recurse -File | Select-Object -First 1).Name
         ((Get-Content -path content\$QPLUG -Raw) -replace '0.0.0.0-master',$TAG) | Set-Content content\$QPLUG
   
-    # Download go-nuget executable (1.1.1)
-    - name: Download go-nuget (1.1.1)
+    # Download go-nuget executable (1.1.2)
+    - name: Download go-nuget (1.1.2)
       run: |
-        Invoke-WebRequest -Uri https://github.com/soloworks/go-nuget/releases/download/v1.1.1/go-nuget_1.1.1_Windows_x86_64.zip -OutFile go-nuget.zip
+        Invoke-WebRequest -Uri https://github.com/soloworks/go-nuget/releases/download/v1.1.2/go-nuget_1.1.2_Windows_x86_64.zip -OutFile go-nuget.zip
         Expand-Archive .\go-nuget.zip
   
     # Pack up package
