@@ -18,3 +18,4 @@ jobs:
         with:
           nuget-host: "https://q-sys.soloworks.co.uk/q-sys-community-plugins/"
           api-key: ${{ secrets.NUGET_APIKEY }}
+          md-to-desc: "description.md"
