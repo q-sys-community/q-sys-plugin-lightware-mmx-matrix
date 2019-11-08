@@ -8,12 +8,12 @@ on:
 jobs:
   pack-and-push-job:
     runs-on: ubuntu-latest
-    name: A job to package and publish Q-Sys Community Plugins
+    name: Package and Publish plugin to Q-Sys Community Server
     steps:
-      - name: Copy Files into Workflow directory
+      - name: Checkout Files
         uses: actions/checkout@v1
 
-      - name: Pack and Push Plugin
+      - name: Pack and Push
         uses: soloworks/publish-q-sys-plugin@v1
         with:
           nuget-host: "https://q-sys.soloworks.co.uk/q-sys-community-plugins/"
