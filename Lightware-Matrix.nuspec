@@ -5,8 +5,8 @@
     <id>Lightware-Matrix</id>
     <version>0.0.0.0-master</version>
     <title>Lightware Matrix</title>
-    <authors>Sam Shelton</authors>
-    <owners>Solo Works London</owners>
+    <authors>Solo Works London</authors>
+    <owners>Q-Sys Community</owners>
     <license type="expression">GPL-3.0-or-later</license>
     <projectUrl>https://github.com/q-sys-community/q-sys-plugin-lightware-matrix</projectUrl>
     <iconUrl>http://content/images/lightware-logo-128px.png</iconUrl>
