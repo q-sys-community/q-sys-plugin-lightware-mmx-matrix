@@ -13,13 +13,21 @@ PluginInfo = {
 
 -- Once you've drawn your plugin in Designer, you can determine what colors you use a lot. Save yourself some time by putting them in a table, and then simply calling them later.
 local Colors = {
+    lightware_red = {157,11,14},
+    lightware_black = {28,40,52},
     White = {255, 255, 255},
     Black = {0, 0, 0},
     Red = {255, 0, 0},
     Green = {0, 255, 0}
 }
 
+function GetColor(props)
+    return Colors.lightware_red
+end
+
 local MaxSources = 4
+input_count = 16
+output_count = 16
 -- We can let users determine some of the plugin properties by exposing them here
 -- While this function can be very useful, it is completely optional and not always needed.
 -- If no Properties are set here, only the position and fill properties of your plugin will show in the Properties pane
@@ -58,7 +66,7 @@ function GetControls(props)
     ctls = {
         -- System Pins
         {
-            Name = "Online",
+            Name = "online",
             ControlType = "Indicator",
             IndicatorType = "Led",
             PinStyle = "Output",
@@ -66,7 +74,7 @@ function GetControls(props)
             UserPin = true
         },
         {
-            Name = "IPAddress",
+            Name = "ip_address",
             ControlType = "Indicator",
             IndicatorType = "Text",
             PinStyle = "Both",
@@ -74,7 +82,7 @@ function GetControls(props)
             UserPin = true
         },
         {
-            Name = "Model",
+            Name = "model",
             ControlType = "Indicator",
             IndicatorType = "Text",
             PinStyle = "Output",
@@ -82,7 +90,7 @@ function GetControls(props)
             UserPin = true
         },
         {
-            Name = "SerialNumber",
+            Name = "serial_number",
             ControlType = "Indicator",
             IndicatorType = "Text",
             PinStyle = "Output",
@@ -90,7 +98,7 @@ function GetControls(props)
             UserPin = true
         },
         {
-            Name = "SoftwareVersion",
+            Name = "firmware_version",
             ControlType = "Indicator",
             IndicatorType = "Text",
             PinStyle = "Output",
@@ -98,27 +106,27 @@ function GetControls(props)
             UserPin = true
         },
         {
-            Name = "Temperature",
-            ControlType = "Knob",
-            IndicatorType = "Integer",
-            Min = 0,
-            Max = 100,
-            PinStyle = "Output",
-            Count = 1,
-            UserPin = true
-        },
+			Name = "temperature",
+			ControlType = "Knob",
+			ControlUnit = "Integer",
+			PinStyle = "Output",
+			Min = 0,
+			Max = 125,
+			Count = 1,
+			UserPin = true
+		},
         -- Source Ports
         {
-            Name = "VideoSourceSignal",
+            Name = "input_signal",
             ControlType = "Indicator",
             IndicatorType = "Led",
             PinStyle = "Output",
             Count = MaxSources,
             UserPin = true
         },
-        -- Destination Ports
+        --[[-- Destination Ports
         {
-            Name = "VideoDestSource",
+            Name = "output",
             ControlType = "Knob",
             ControlUnit = "Integer",
             Min = 1,
@@ -128,7 +136,7 @@ function GetControls(props)
             UserPin = true
         },
         {
-            Name = "VideoDestSourceAll",
+            Name = "output_all",
             ControlType = "Knob",
             ControlUnit = "Integer",
             Min = 1,
@@ -136,8 +144,32 @@ function GetControls(props)
             PinStyle = "Input",
             Count = 1
             --UserPin = true
-        }
+        }]]
     }
+    for i=1, output_count do
+        table.insert(ctls, {
+           Name = "output_"..i,
+           ControlType = "Text",
+           PinStyle = "Both",
+           UserPin = true
+       })
+       table.insert(ctls, {
+           Name = "video_mute_"..i,
+           ControlType = "Button",
+           ButtonType = "Toggle",
+           PinStyle = "Both",
+           UserPin = true
+       })
+       for s=1, input_count do
+           table.insert(ctls, {
+               Name = "input_".. s .. "-output_" .. i,
+               ControlType = "Button",
+               ButtonType = "Toggle",
+               PinStyle = "Both",
+               UserPin = true
+           })
+       end
+    end
     return ctls
 end
 
@@ -155,17 +187,34 @@ end
 function GetControlLayout(props)
     local layout = {}
 
+    input_count, output_count = 4,2 -- this needs to become an If statement based on model/props
+    input_count = props["Source Count"].Value
+    local title_size = {224,32}
+    local btn_size = {32,24}
+    local matrix_groupbox_position = {0, 9*btn_size[2]}
+    local matrix_groupbox_size = {72 + (output_count * btn_size[1]), 16 + (3*btn_size[2]) + (input_count * btn_size[2])}
+
     graphics = {
         {
-            Type = "GroupBox", -- This is the overall groupbox that will give the plugin a more 'contained' look
-            Text = "Info",
-            HTextAlign = "Left",
-            Fill = Colors.White,
-            CornerRadius = 8,
-            StrokeColor = Colors.Black,
-            StrokeWidth = 1,
+            Type = "Header",
+            Text = "Lightware Matrix",
+            HTextAlign = "Center",
+            Color = Colors.lightware_red,
+            FontSize = 16,
             Position = {0, 0},
-            Size = {220, 140} -- The width of the main GroupBox is dependent on how many channels the user specified. More channels means a wider group box
+            Size = title_size
+        },
+        {
+            Type = "GroupBox",
+            Text = "Status",
+            HTextAlign = "Left",
+            Fill = Colors.lightware_black,
+            CornerRadius = 8,
+            StrokeColor = Colors.lightware_red,
+            Color = Colors.lightware_red,
+            StrokeWidth = 1,
+            Position = {0,title_size[2]},
+            Size = {title_size[1], 7*btn_size[2]}
         },
         {
             Type = "Text",
@@ -174,9 +223,9 @@ function GetControlLayout(props)
             FontSize = 12,
             FontStyle = "Bold",
             HTextAlign = "Right",
-            Color = Colors.Black,
-            Position = {0, 0},
-            Size = {100, 20}
+            Color = Colors.White,
+            Position = {0, title_size[2]+(0.5*btn_size[2])},
+            Size = {3*btn_size[1], btn_size[2]}
         },
         {
             Type = "Text",
@@ -185,9 +234,9 @@ function GetControlLayout(props)
             FontSize = 12,
             FontStyle = "Bold",
             HTextAlign = "Right",
-            Color = Colors.Black,
-            Position = {0, 20},
-            Size = {100, 20}
+            Color = Colors.White,
+            Position = {0, title_size[2]+(1.5*btn_size[2])},
+            Size = {3*btn_size[1], btn_size[2]}
         },
         {
             Type = "Text",
@@ -196,9 +245,9 @@ function GetControlLayout(props)
             FontSize = 12,
             FontStyle = "Bold",
             HTextAlign = "Right",
-            Color = Colors.Black,
-            Position = {0, 40},
-            Size = {100, 20}
+            Color = Colors.White,
+            Position = {0, title_size[2]+(2.5*btn_size[2])},
+            Size = {3*btn_size[1], btn_size[2]}
         },
         {
             Type = "Text",
@@ -207,20 +256,20 @@ function GetControlLayout(props)
             FontSize = 12,
             FontStyle = "Bold",
             HTextAlign = "Right",
-            Color = Colors.Black,
-            Position = {0, 60},
-            Size = {100, 20}
+            Color = Colors.White,
+            Position = {0, title_size[2]+(3.5*btn_size[2])},
+            Size = {3*btn_size[1], btn_size[2]}
         },
         {
             Type = "Text",
-            Text = "Software:",
+            Text = "Firmware:",
             Font = "Roboto",
             FontSize = 12,
             FontStyle = "Bold",
             HTextAlign = "Right",
-            Color = Colors.Black,
-            Position = {0, 80},
-            Size = {100, 20}
+            Color = Colors.White,
+            Position = {0, title_size[2]+(4.5*btn_size[2])},
+            Size = {3*btn_size[1], btn_size[2]}
         },
         {
             Type = "Text",
@@ -229,66 +278,92 @@ function GetControlLayout(props)
             FontSize = 12,
             FontStyle = "Bold",
             HTextAlign = "Right",
-            Color = Colors.Black,
-            Position = {0, 100},
-            Size = {100, 20}
+            Color = Colors.White,
+            Position = {0, title_size[2]+(5.5*btn_size[2])},
+            Size = {3*btn_size[1], btn_size[2]}
         },
         {
             Type = "GroupBox",
-            Text = "State",
+            Text = "Matrix",
             HTextAlign = "Left",
-            Fill = Colors.White,
+            Fill = Colors.lightware_black,
             CornerRadius = 8,
-            StrokeColor = Colors.Black,
+            StrokeColor = Colors.lightware_red,
+            Color = Colors.lightware_red,
             StrokeWidth = 1,
-            Position = {0, 150},
-            Size = {220, 170}
+            Position = matrix_groupbox_position,
+            Size = matrix_groupbox_size
+        },
+        {
+            Type = "Text",
+            Text = "Signal",
+            FontSize = 10,
+            Color = Colors.White,
+            Position = {matrix_groupbox_position[1], (matrix_groupbox_position[2] + (2.5*btn_size[2]))},
+            Size = btn_size
         }
     }
-
+    for i=1, input_count do
+        table.insert(graphics, {
+            Type = "Text",
+            Text = "In" .. i,
+            Color = Colors.White,
+            Position = {(matrix_groupbox_position[1] + btn_size[1]), (matrix_groupbox_position[2] + (2.5*btn_size[2])) + (i * btn_size[2])},
+            Size = btn_size
+        })
+    end
+    for i=1, output_count do
+        table.insert(graphics, {
+            Type = "Text",
+            Text = "Out\r" .. i,
+            Color = Colors.White,
+            Position = {btn_size[1] + (i * btn_size[1]), (matrix_groupbox_position[2] + (1.5*btn_size[2]))},
+            Size = btn_size
+        })
+    end
     -- System
-    layout["Online"] = {
+    layout["online"] = {
         PrettyName = "System~Online",
         Style = "Indicator",
         Color = {0, 255, 0},
-        Position = {100, 00},
-        Size = {20, 20}
+        Position = {3*btn_size[1], title_size[2]+(0.5*btn_size[2])},
+        Size = {btn_size[2], btn_size[2]}
     }
-    layout["IPAddress"] = {
+    layout["ip_address"] = {
         PrettyName = "System~IP Address",
         Style = "TextBox",
-        Position = {100, 20},
-        Size = {100, 20}
+        Position = {3*btn_size[1], title_size[2]+(1.5*btn_size[2])},
+        Size = {3*btn_size[1], btn_size[2]}
     }
-    layout["Model"] = {
+    layout["model"] = {
         PrettyName = "System~Model Name",
         Style = "Text",
-        Position = {100, 40},
-        Size = {100, 20}
+        Position = {3*btn_size[1], title_size[2]+(2.5*btn_size[2])},
+        Size = {3*btn_size[1], btn_size[2]}
     }
-    layout["SerialNumber"] = {
-        PrettyName = "System~Serial Number",
+    layout["serial_number"] = {
+        PrettyName = "System~Part Number",
         Style = "Text",
-        Position = {100, 60},
-        Size = {100, 20}
+        Position = {3*btn_size[1], title_size[2]+(3.5*btn_size[2])},
+        Size = {3*btn_size[1], btn_size[2]}
     }
-    layout["SoftwareVersion"] = {
-        PrettyName = "System~Software Version",
+    layout["firmware_version"] = {
+        PrettyName = "System~Firmware Version",
         Style = "Text",
-        Position = {100, 80},
-        Size = {100, 20}
+        Position = {3*btn_size[1], title_size[2]+(4.5*btn_size[2])},
+        Size = {3*btn_size[1], btn_size[2]}
     }
-    layout["Temperature"] = {
+    layout["temperature"] = {
         PrettyName = "System~Temperature",
         Style = "Text",
         Color = {223, 0, 36},
-        Position = {100, 100},
-        Size = {100, 20}
+        Position = {3*btn_size[1], title_size[2]+(5.5*btn_size[2])},
+        Size = {3*btn_size[1], btn_size[2]}
     }
 
-    -- Source Ports
+    --[[-- Source Ports
     for s = 1, props["Source Count"].Value do
-        layout["VideoSourceSignal " .. s] = {
+        layout["input_signal " .. s] = {
             PrettyName = string.format("Source%02i~Signal", s),
             Style = "Indicator",
             Color = {0, 255, 0},
@@ -314,7 +389,7 @@ function GetControlLayout(props)
 
     -- Dest Ports
     for d = 1, 2 do
-        layout["VideoDestSource " .. d] = {
+        layout["output " .. d] = {
             PrettyName = string.format("Dest%02i~Source", d),
             Style = "Text",
             Color = {223, 0, 36},
@@ -322,15 +397,53 @@ function GetControlLayout(props)
             Size = {36, 16}
         }
     end
-    layout["VideoDestSourceAll"] = {
+    layout["output_all"] = {
         PrettyName = "DestAll~Source",
         Style = "Text",
         Color = {223, 0, 36},
         Position = {100, 346},
         Size = {36, 16}
-    }
-
+    }]]
+    for i=1, output_count do -- For each output
+        layout["output_"..i] = {
+            PrettyName = "Output " .. i .. "~Select",
+            Style = "Indicator",
+            Color = {255, 255, 255},
+            Position = {btn_size[1] + (i * btn_size[1]), matrix_groupbox_position[2] + (2.5*btn_size[2])},
+            Size = btn_size
+        }
+        layout["video_mute_"..i] = {
+            PrettyName = "Video Mute~Video Mute " .. i,
+            Style = "Button",
+            Legend = "Mute",
+            Color = {255,0,0},
+            Position = {btn_size[1] + (i * btn_size[1]), matrix_groupbox_position[2] + (0.5*btn_size[2])},
+            Size = btn_size
+        }
+        for s=1, input_count do -- For each input
+            layout["input_".. s .. "-output_" .. i] = {
+                PrettyName = "Output " .. i .. "~In".. s .. " -> Out" .. i,
+                Style = "Button",
+                Legend = tostring(s),
+                Position = {btn_size[1] + (i * btn_size[1]), matrix_groupbox_position[2] + (2.5*btn_size[2] + (s*btn_size[2]))},
+                Size = btn_size
+            }
+        end
+    end
+    for i=1, input_count do
+        layout["input_signal " .. i] = {
+            PrettyName = string.format("Signal Presence~Source %02i", i),
+            Style = "Indicator",
+            Color = {0, 255, 0},
+            Position = {(matrix_groupbox_position[1] + (btn_size[1] - btn_size[2]) / 2), matrix_groupbox_position[2] + ((i+2.5) * btn_size[2] )},
+            Size = {btn_size[2], btn_size[2]}
+        }
+    end
     return layout, graphics
+end
+
+function tie_command(inp,outp)
+    fnSend("CALL", "/MEDIA/VIDEO/XP:switch(I" .. math.tointeger(inp) .. ":O" .. math.tointeger(outp) .. ")")
 end
 
 if Controls then
@@ -351,7 +464,7 @@ if Controls then
     timerComms = Timer.New()
     timerComms.EventHandler = function(timer)
         timer:Stop()
-        Controls.Online.Boolean = false
+        Controls.online.Boolean = false
         print("Connection Timed Out")
         conn:Disconnect()
         fnConnect()
@@ -419,8 +532,8 @@ if Controls then
         -- Open Connection
         conn:Connect(LW3.Host, LW3.Port)
         -- Set IP address value
-        if Controls.IPAddress then
-            Controls.IPAddress.String = LW3.Host .. ":" .. LW3.Port
+        if Controls.ip_address then
+            Controls.ip_address.String = LW3.Host .. ":" .. LW3.Port
         end
     end
 
@@ -459,12 +572,12 @@ if Controls then
                     --Controls.PartNumber.String = val
                     end
                     -- Serial Number
-                    if func == "SerialNumber" then
-                        Controls.SerialNumber.String = val
+                    if func == "serial_number" then
+                        Controls.serial_number.String = val
                     end
                     -- Product Name
                     if func == "ProductName" then
-                        Controls.Model.String = val
+                        Controls.model.String = val
                     end
                 elseif path == "/MANAGEMENT/STATUS" then -- Managemnt Status
                     -- Uptime
@@ -472,14 +585,14 @@ if Controls then
                         --Controls.UpTime.Value = val
                         -- Stop and restart Comms timer
                         timerComms:Stop()
-                        if Controls.Online then -- Check for when developing in a Control Script block
-                            Controls.Online.Boolean = true
+                        if Controls.online then -- Check for when developing in a Control Script block
+                            Controls.online.Boolean = true
                         end
                         timerComms:Start(30)
                     end
                     -- Firmware
                     if func == "CpuFirmware" then
-                        Controls.SoftwareVersion.String = val
+                        Controls.firmware_version.String = val
                     end
                 elseif path == "/MEDIA/VIDEO/XP" then -- Video Crosspoint
                     if func == "SourcePortStatus" then -- Contains byte level data for Source Ports
@@ -493,7 +606,7 @@ if Controls then
                             -- HDCP Status
                             --Controls["VideoSourceHDCPStatus"..p] = (data:sub(4, 4) == "B" or data:sub(4, 4) == "F")
                             -- Signal Present
-                            Controls["VideoSourceSignal"][p].Value = (data:sub(5, 5) == "F")
+                            Controls["input_signal"][p].Value = (data:sub(5, 5) == "F")
                             -- Connection Status
                             --Controls["VideoSourceConnection"..p] = (data:sub(5, 5) == "B" or data:sub(5, 5) == "F")
                         end
@@ -530,17 +643,42 @@ if Controls then
         end
     end
 
+    for i=1, output_count do
+        Controls["output_"..i].EventHandler = function()
+            tie_command(Controls["output_"..i].String,i)
+        end
+        --[[Controls["video_mute_"..i].EventHandler = function()
+            if Controls["video_mute_"..i].Boolean then
+                fnSend("")
+            else
+                fnSend("")
+            end
+        end]]
+    end
+    for i=1, output_count do
+        for p=1, input_count do
+            Controls["input_".. p .. "-output_" .. i].EventHandler = function()
+                if Controls["input_".. p .. "-output_" .. i].Boolean then
+                    Controls["output_"..i].String = tostring(p)
+                else
+                    Controls["output_"..i].String = "0"
+                end
+                tie_command(Controls["output_"..i].String,i)
+            end
+        end
+    end
+    --[[
     -- Loop through all Contgrols and setup Event Handlers
     for k, v in pairs(Controls) do
         -- Setup anything with "Source..."
-        if k == "VideoDestSourceAll" then
+        if k == "output_all" then
             v.EventHandler = function(changedControl)
                 -- Debug Out
                 print("Switch " .. changedControl.Value .. " -> All")
                 -- Send command
                 fnSend("CALL", "/MEDIA/VIDEO/XP:switchAll(I" .. math.tointeger(changedControl.Value) .. ")")
             end
-        elseif k == "VideoDestSource" then -- Setup for individual source selection
+        elseif k == "output_" then -- Setup for individual source selection
             -- Get Output Number
             for s = 1, 2 do
                 v[s].EventHandler = function(changedControl)
@@ -554,5 +692,5 @@ if Controls then
                 end
             end
         end
-    end
+    end]]
 end
