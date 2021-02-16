@@ -8,4 +8,5 @@ Current Features
 
 - Metadata Extraction
 - Input signal detection
-- Source Switching (Per output & All)
+- Source Switching (Per output)
+- Output Mute

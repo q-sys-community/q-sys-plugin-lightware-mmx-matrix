@@ -13,8 +13,8 @@ PluginInfo = {
 
 -- Once you've drawn your plugin in Designer, you can determine what colors you use a lot. Save yourself some time by putting them in a table, and then simply calling them later.
 local Colors = {
-    lightware_red = {157,11,14},
-    lightware_black = {28,40,52},
+    lightware_red = {157, 11, 14},
+    lightware_black = {28, 40, 52},
     White = {255, 255, 255},
     Black = {0, 0, 0},
     Red = {255, 0, 0},
@@ -40,9 +40,9 @@ function GetProperties()
         {
             Name = "Model",
             Type = "enum",
-            Choices = {"MMX4x2","MMX6x2","MMX8x4","MMX8x8"},
+            Choices = {"MMX4x2", "MMX6x2", "MMX8x4", "MMX8x8"},
             Value = "MMX4x2"
-        },
+        }
         --[[ -- for future use
             {
             Name = "Independent Audio",
@@ -110,16 +110,15 @@ function GetControls(props)
             UserPin = true
         },
         {
-			Name = "temperature",
-			ControlType = "Knob",
-			ControlUnit = "Integer",
-			PinStyle = "Output",
-			Min = 0,
-			Max = 125,
-			Count = 1,
-			UserPin = true
-		},
-        -- Source Ports
+            Name = "temperature",
+            ControlType = "Knob",
+            ControlUnit = "Integer",
+            PinStyle = "Output",
+            Min = 0,
+            Max = 125,
+            Count = 1,
+            UserPin = true
+        },
         {
             Name = "input_signal",
             ControlType = "Indicator",
@@ -127,52 +126,40 @@ function GetControls(props)
             PinStyle = "Output",
             Count = input_count,
             UserPin = true
-        },
-        --[[-- Destination Ports
-        {
-            Name = "output",
-            ControlType = "Knob",
-            ControlUnit = "Integer",
-            Min = 1,
-            Max = input_count,
-            PinStyle = "Both",
-            Count = 2,
-            UserPin = true
-        },
-        {
-            Name = "output_all",
-            ControlType = "Knob",
-            ControlUnit = "Integer",
-            Min = 1,
-            Max = input_count,
-            PinStyle = "Input",
-            Count = 1
-            --UserPin = true
-        }]]
+        }
     }
-    for i=1, output_count do
-        table.insert(ctls, {
-           Name = "output_"..i,
-           ControlType = "Text",
-           PinStyle = "Both",
-           UserPin = true
-       })
-       table.insert(ctls, {
-           Name = "video_mute_"..i,
-           ControlType = "Button",
-           ButtonType = "Toggle",
-           PinStyle = "Both",
-           UserPin = true
-       })
-       for s=1, input_count do
-           table.insert(ctls, {
-               Name = "input_".. s .. "-output_" .. i,
-               ControlType = "Button",
-               ButtonType = "Toggle",
-               PinStyle = "Both",
-               UserPin = true
-           })
-       end
+    for i = 1, output_count do
+        table.insert(
+            ctls,
+            {
+                Name = "output_" .. i,
+                ControlType = "Text",
+                PinStyle = "Both",
+                UserPin = true
+            }
+        )
+        table.insert(
+            ctls,
+            {
+                Name = "video_mute_" .. i,
+                ControlType = "Button",
+                ButtonType = "Toggle",
+                PinStyle = "Both",
+                UserPin = true
+            }
+        )
+        for s = 1, input_count do
+            table.insert(
+                ctls,
+                {
+                    Name = "input_" .. s .. "-output_" .. i,
+                    ControlType = "Button",
+                    ButtonType = "Toggle",
+                    PinStyle = "Both",
+                    UserPin = true
+                }
+            )
+        end
     end
     return ctls
 end
@@ -191,11 +178,15 @@ end
 function GetControlLayout(props)
     local layout = {}
 
-    input_count,output_count = string.match(props["Model"].Value, "MMX(%d+)x(%d+)")
-    local title_size = {224,32}
-    local btn_size = {32,24}
-    local matrix_groupbox_position = {0, 9*btn_size[2]}
-    local matrix_groupbox_size = {72 + (output_count * btn_size[1]), 16 + (3*btn_size[2]) + (input_count * btn_size[2])}
+    input_count, output_count = string.match(props["Model"].Value, "MMX(%d+)x(%d+)")
+
+    local title_size = {224, 32}
+    local btn_size = {32, 24}
+    local matrix_groupbox_position = {0, 9 * btn_size[2]}
+    local matrix_groupbox_size = {
+        72 + (output_count * btn_size[1]),
+        16 + (3 * btn_size[2]) + (input_count * btn_size[2])
+    }
 
     graphics = {
         {
@@ -216,8 +207,8 @@ function GetControlLayout(props)
             StrokeColor = Colors.lightware_red,
             Color = Colors.lightware_red,
             StrokeWidth = 1,
-            Position = {0,title_size[2]},
-            Size = {title_size[1], 7*btn_size[2]}
+            Position = {0, title_size[2]},
+            Size = {title_size[1], 7 * btn_size[2]}
         },
         {
             Type = "Text",
@@ -227,8 +218,8 @@ function GetControlLayout(props)
             FontStyle = "Bold",
             HTextAlign = "Right",
             Color = Colors.White,
-            Position = {0, title_size[2]+(0.5*btn_size[2])},
-            Size = {3*btn_size[1], btn_size[2]}
+            Position = {0, title_size[2] + (0.5 * btn_size[2])},
+            Size = {3 * btn_size[1], btn_size[2]}
         },
         {
             Type = "Text",
@@ -238,8 +229,8 @@ function GetControlLayout(props)
             FontStyle = "Bold",
             HTextAlign = "Right",
             Color = Colors.White,
-            Position = {0, title_size[2]+(1.5*btn_size[2])},
-            Size = {3*btn_size[1], btn_size[2]}
+            Position = {0, title_size[2] + (1.5 * btn_size[2])},
+            Size = {3 * btn_size[1], btn_size[2]}
         },
         {
             Type = "Text",
@@ -249,8 +240,8 @@ function GetControlLayout(props)
             FontStyle = "Bold",
             HTextAlign = "Right",
             Color = Colors.White,
-            Position = {0, title_size[2]+(2.5*btn_size[2])},
-            Size = {3*btn_size[1], btn_size[2]}
+            Position = {0, title_size[2] + (2.5 * btn_size[2])},
+            Size = {3 * btn_size[1], btn_size[2]}
         },
         {
             Type = "Text",
@@ -260,8 +251,8 @@ function GetControlLayout(props)
             FontStyle = "Bold",
             HTextAlign = "Right",
             Color = Colors.White,
-            Position = {0, title_size[2]+(3.5*btn_size[2])},
-            Size = {3*btn_size[1], btn_size[2]}
+            Position = {0, title_size[2] + (3.5 * btn_size[2])},
+            Size = {3 * btn_size[1], btn_size[2]}
         },
         {
             Type = "Text",
@@ -271,8 +262,8 @@ function GetControlLayout(props)
             FontStyle = "Bold",
             HTextAlign = "Right",
             Color = Colors.White,
-            Position = {0, title_size[2]+(4.5*btn_size[2])},
-            Size = {3*btn_size[1], btn_size[2]}
+            Position = {0, title_size[2] + (4.5 * btn_size[2])},
+            Size = {3 * btn_size[1], btn_size[2]}
         },
         {
             Type = "Text",
@@ -282,8 +273,8 @@ function GetControlLayout(props)
             FontStyle = "Bold",
             HTextAlign = "Right",
             Color = Colors.White,
-            Position = {0, title_size[2]+(5.5*btn_size[2])},
-            Size = {3*btn_size[1], btn_size[2]}
+            Position = {0, title_size[2] + (5.5 * btn_size[2])},
+            Size = {3 * btn_size[1], btn_size[2]}
         },
         {
             Type = "GroupBox",
@@ -302,162 +293,129 @@ function GetControlLayout(props)
             Text = "Signal",
             FontSize = 10,
             Color = Colors.White,
-            Position = {matrix_groupbox_position[1], (matrix_groupbox_position[2] + (2.5*btn_size[2]))},
+            Position = {matrix_groupbox_position[1], (matrix_groupbox_position[2] + (2.5 * btn_size[2]))},
             Size = btn_size
         }
     }
-    for i=1, input_count do
-        table.insert(graphics, {
-            Type = "Text",
-            Text = "In" .. i,
-            Color = Colors.White,
-            Position = {(matrix_groupbox_position[1] + btn_size[1]), (matrix_groupbox_position[2] + (2.5*btn_size[2])) + (i * btn_size[2])},
-            Size = btn_size
-        })
+    for i = 1, input_count do
+        table.insert(
+            graphics,
+            {
+                Type = "Text",
+                Text = "In" .. i,
+                Color = Colors.White,
+                Position = {
+                    (matrix_groupbox_position[1] + btn_size[1]),
+                    (matrix_groupbox_position[2] + (2.5 * btn_size[2])) + (i * btn_size[2])
+                },
+                Size = btn_size
+            }
+        )
     end
-    for i=1, output_count do
-        table.insert(graphics, {
-            Type = "Text",
-            Text = "Out\r" .. i,
-            Color = Colors.White,
-            Position = {btn_size[1] + (i * btn_size[1]), (matrix_groupbox_position[2] + (1.5*btn_size[2]))},
-            Size = btn_size
-        })
+    for i = 1, output_count do
+        table.insert(
+            graphics,
+            {
+                Type = "Text",
+                Text = "Out\r" .. i,
+                Color = Colors.White,
+                Position = {btn_size[1] + (i * btn_size[1]), (matrix_groupbox_position[2] + (1.5 * btn_size[2]))},
+                Size = btn_size
+            }
+        )
     end
     -- System
     layout["online"] = {
         PrettyName = "System~Online",
         Style = "Indicator",
         Color = {0, 255, 0},
-        Position = {3*btn_size[1], title_size[2]+(0.5*btn_size[2])},
+        Position = {3 * btn_size[1], title_size[2] + (0.5 * btn_size[2])},
         Size = {btn_size[2], btn_size[2]}
     }
     layout["ip_address"] = {
         PrettyName = "System~IP Address",
         Style = "TextBox",
-        Position = {3*btn_size[1], title_size[2]+(1.5*btn_size[2])},
-        Size = {3*btn_size[1], btn_size[2]}
+        Position = {3 * btn_size[1], title_size[2] + (1.5 * btn_size[2])},
+        Size = {3 * btn_size[1], btn_size[2]}
     }
     layout["model"] = {
         PrettyName = "System~Model Name",
         Style = "Text",
-        Position = {3*btn_size[1], title_size[2]+(2.5*btn_size[2])},
-        Size = {3*btn_size[1], btn_size[2]}
+        Position = {3 * btn_size[1], title_size[2] + (2.5 * btn_size[2])},
+        Size = {3 * btn_size[1], btn_size[2]}
     }
     layout["serial_number"] = {
         PrettyName = "System~Part Number",
         Style = "Text",
-        Position = {3*btn_size[1], title_size[2]+(3.5*btn_size[2])},
-        Size = {3*btn_size[1], btn_size[2]}
+        Position = {3 * btn_size[1], title_size[2] + (3.5 * btn_size[2])},
+        Size = {3 * btn_size[1], btn_size[2]}
     }
     layout["firmware_version"] = {
         PrettyName = "System~Firmware Version",
         Style = "Text",
-        Position = {3*btn_size[1], title_size[2]+(4.5*btn_size[2])},
-        Size = {3*btn_size[1], btn_size[2]}
+        Position = {3 * btn_size[1], title_size[2] + (4.5 * btn_size[2])},
+        Size = {3 * btn_size[1], btn_size[2]}
     }
     layout["temperature"] = {
         PrettyName = "System~Temperature",
         Style = "Text",
         Color = {223, 0, 36},
-        Position = {3*btn_size[1], title_size[2]+(5.5*btn_size[2])},
-        Size = {3*btn_size[1], btn_size[2]}
+        Position = {3 * btn_size[1], title_size[2] + (5.5 * btn_size[2])},
+        Size = {3 * btn_size[1], btn_size[2]}
     }
-
-    --[[-- Source Ports
-    for s = 1, props["Source Count"].Value do
-        layout["input_signal " .. s] = {
-            PrettyName = string.format("Source%02i~Signal", s),
-            Style = "Indicator",
-            Color = {0, 255, 0},
-            Position = {10, 155 + (s * 20)},
-            Size = {20, 20}
-        }
-        -- Add Label
-        table.insert(
-            graphics,
-            {
-                Type = "Text",
-                Text = string.format("Source%02i Signal", s),
-                Font = "Roboto",
-                FontSize = 12,
-                FontStyle = "Bold",
-                HTextAlign = "Right",
-                Color = Colors.Black,
-                Position = {25, 155 + (s * 20)},
-                Size = {100, 20}
-            }
-        )
-    end
-
-    -- Dest Ports
-    for d = 1, 2 do
-        layout["output " .. d] = {
-            PrettyName = string.format("Dest%02i~Source", d),
-            Style = "Text",
-            Color = {223, 0, 36},
-            Position = {100, 346 + (d * 20)},
-            Size = {36, 16}
-        }
-    end
-    layout["output_all"] = {
-        PrettyName = "DestAll~Source",
-        Style = "Text",
-        Color = {223, 0, 36},
-        Position = {100, 346},
-        Size = {36, 16}
-    }]]
-    for i=1, output_count do -- For each output
-        layout["output_"..i] = {
+    for i = 1, output_count do -- For each output
+        layout["output_" .. i] = {
             PrettyName = "Output " .. i .. "~Select",
             Style = "Indicator",
             Color = {255, 255, 255},
-            Position = {btn_size[1] + (i * btn_size[1]), matrix_groupbox_position[2] + (2.5*btn_size[2])},
+            Position = {btn_size[1] + (i * btn_size[1]), matrix_groupbox_position[2] + (2.5 * btn_size[2])},
             Size = btn_size
         }
-        layout["video_mute_"..i] = {
+        layout["video_mute_" .. i] = {
             PrettyName = "Video Mute~Video Mute " .. i,
             Style = "Button",
             Legend = "Mute",
-            Color = {255,0,0},
-            Position = {btn_size[1] + (i * btn_size[1]), matrix_groupbox_position[2] + (0.5*btn_size[2])},
+            Color = {255, 0, 0},
+            Position = {btn_size[1] + (i * btn_size[1]), matrix_groupbox_position[2] + (0.5 * btn_size[2])},
             Size = btn_size
         }
-        for s=1, input_count do -- For each input
-            layout["input_".. s .. "-output_" .. i] = {
-                PrettyName = "Output " .. i .. "~In".. s .. " -> Out" .. i,
+        for s = 1, input_count do -- For each input
+            layout["input_" .. s .. "-output_" .. i] = {
+                PrettyName = "Output " .. i .. "~In" .. s .. " -> Out" .. i,
                 Style = "Button",
                 Legend = tostring(s),
-                Position = {btn_size[1] + (i * btn_size[1]), matrix_groupbox_position[2] + (2.5*btn_size[2] + (s*btn_size[2]))},
+                Position = {
+                    btn_size[1] + (i * btn_size[1]),
+                    matrix_groupbox_position[2] + (2.5 * btn_size[2] + (s * btn_size[2]))
+                },
                 Size = btn_size
             }
         end
     end
-    for i=1, input_count do
+    for i = 1, input_count do
         layout["input_signal " .. i] = {
             PrettyName = string.format("Signal Presence~Source %02i", i),
             Style = "Indicator",
             Color = {0, 255, 0},
-            Position = {(matrix_groupbox_position[1] + (btn_size[1] - btn_size[2]) / 2), matrix_groupbox_position[2] + ((i+2.5) * btn_size[2] )},
+            Position = {
+                (matrix_groupbox_position[1] + (btn_size[1] - btn_size[2]) / 2),
+                matrix_groupbox_position[2] + ((i + 2.5) * btn_size[2])
+            },
             Size = {btn_size[2], btn_size[2]}
         }
     end
     return layout, graphics
 end
 
-function matrix_feedback(inp,outp)
-    Controls["output_"..outp].String = inp
-    for i=1, input_count do
-        Controls["input_".. i .. "-output_" .. outp].Boolean = false
-    end
-    if inp ~= "0" then
-        Controls["input_".. inp .. "-output_" .. outp].Boolean = true
+function matrix_feedback(inp, outp)
+    Controls["output_" .. outp].String = inp
+    for i = 1, input_count do
+        Controls["input_" .. i .. "-output_" .. outp].Boolean = i == tonumber(inp)
     end
 end
 
-function tie_command(inp,outp)
-    --fnSend("CALL", "/MEDIA/VIDEO/XP:switch(I" .. math.tointeger(inp) .. ":O" .. math.tointeger(outp) .. ")")
-    fnSend("CALL", string.format("/MEDIA/VIDEO/XP:switch(I%1i:O%1i)", inp,outp))
+function tie_command(inp, outp)
+    fnSend("CALL", string.format("/MEDIA/VIDEO/XP:switch(I%1i:O%1i)", inp, outp))
 end
 
 if Controls then
@@ -585,7 +543,7 @@ if Controls then
                     --Controls.PartNumber.String = val
                     end
                     -- Serial Number
-                    if func == "serial_number" then
+                    if func == "SerialNumber" then
                         Controls.serial_number.String = val
                     end
                     -- Product Name
@@ -626,7 +584,7 @@ if Controls then
                     elseif func == "DestinationPortStatus" then -- Contains byte level data for Source Ports
                         for p, data in ipairs(split(val, ";")) do
                             -- Mute State
-                            --Controls["VideoDestMute"..p] = (data:sub(1, 1) == "M" or data:sub(1, 1) == "U")
+                            Controls["video_mute_" .. p].Boolean = (data:sub(1, 1) == "M" or data:sub(1, 1) == "U")
                             -- Lock State
                             --Controls["VideoDestLock"..p] = (data:sub(1, 1) == "L" or data:sub(1, 1) == "U")
                             -- Enbedded Audio
@@ -640,7 +598,7 @@ if Controls then
                         end
                     elseif func == "DestinationConnectionList" then
                         for p, data in ipairs(split(val, ";")) do
-                            matrix_feedback(data:sub(2,-1),p)
+                            matrix_feedback(data:sub(2, -1), p)
                         end
                     end
                 end
@@ -659,55 +617,25 @@ if Controls then
             print("IP Address Property Not Set")
         end
     end
-
-    for i=1, output_count do
-        Controls["output_"..i].EventHandler = function()
-            tie_command(Controls["output_"..i].String,i)
+    for i = 1, output_count do
+        Controls["output_" .. i].EventHandler = function()
+            tie_command(Controls["output_" .. i].String, i)
         end
-        --[[Controls["video_mute_"..i].EventHandler = function()
-            if Controls["video_mute_"..i].Boolean then
-                fnSend("")
+        Controls["video_mute_" .. i].EventHandler = function()
+            if Controls["video_mute_" .. i].Boolean then
+                print("CALL", string.format("/MEDIA/VIDEO/XP:muteDestination(O%i)", i))
+                fnSend("CALL", string.format("/MEDIA/VIDEO/XP:muteDestination(O%i)", i))
             else
-                fnSend("")
-            end
-        end]]
-    end
-    for i=1, output_count do
-        for p=1, input_count do
-            Controls["input_".. p .. "-output_" .. i].EventHandler = function()
-                if Controls["input_".. p .. "-output_" .. i].Boolean then
-                    Controls["output_"..i].String = tostring(p)
-                else
-                    Controls["output_"..i].String = "0"
-                end
-                tie_command(Controls["output_"..i].String,i)
+                fnSend("CALL", string.format("/MEDIA/VIDEO/XP:unmuteDestination(O%i)", i))
             end
         end
     end
-    --[[
-    -- Loop through all Contgrols and setup Event Handlers
-    for k, v in pairs(Controls) do
-        -- Setup anything with "Source..."
-        if k == "output_all" then
-            v.EventHandler = function(changedControl)
-                -- Debug Out
-                print("Switch " .. changedControl.Value .. " -> All")
-                -- Send command
-                fnSend("CALL", "/MEDIA/VIDEO/XP:switchAll(I" .. math.tointeger(changedControl.Value) .. ")")
-            end
-        elseif k == "output_" then -- Setup for individual source selection
-            -- Get Output Number
-            for s = 1, 2 do
-                v[s].EventHandler = function(changedControl)
-                    -- Debug Out
-                    print("Switch " .. changedControl.Value .. string.format(" -> %02i", s))
-                    -- Send Command
-                    fnSend(
-                        "CALL",
-                        "/MEDIA/VIDEO/XP:switch(I" .. math.tointeger(changedControl.Value) .. string.format(":O%i)", s)
-                    )
-                end
+    for i = 1, output_count do
+        for p = 1, input_count do
+            Controls["input_" .. p .. "-output_" .. i].EventHandler = function()
+                Controls["output_" .. i].String = tostring(p)
+                tie_command(Controls["output_" .. i].String, i)
             end
         end
-    end]]
+    end
 end
