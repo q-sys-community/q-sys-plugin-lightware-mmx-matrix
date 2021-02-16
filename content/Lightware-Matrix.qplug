@@ -43,7 +43,7 @@ function GetProperties()
             Type = "integer",
             Min = 2,
             Max = MaxSources,
-            Value = 2
+            Value = 4
         }
     }
     return props
@@ -442,8 +442,19 @@ function GetControlLayout(props)
     return layout, graphics
 end
 
+function matrix_feedback(inp,outp)
+    Controls["output_"..outp].String = inp
+    for i=1, input_count do
+        Controls["input_".. i .. "-output_" .. outp].Boolean = false
+    end
+    if inp ~= "0" then
+        Controls["input_".. inp .. "-output_" .. outp].Boolean = true
+    end
+end
+
 function tie_command(inp,outp)
-    fnSend("CALL", "/MEDIA/VIDEO/XP:switch(I" .. math.tointeger(inp) .. ":O" .. math.tointeger(outp) .. ")")
+    --fnSend("CALL", "/MEDIA/VIDEO/XP:switch(I" .. math.tointeger(inp) .. ":O" .. math.tointeger(outp) .. ")")
+    fnSend("CALL", string.format("/MEDIA/VIDEO/XP:switch(I%1i:O%1i)", inp,outp))
 end
 
 if Controls then
@@ -550,8 +561,7 @@ if Controls then
         -- Read out lines from the buffer
         line = conn:ReadLine(TcpSocket.EOL.Any)
         while (line ~= nil) do
-            -- Print Line
-            --print(line)
+            print(line)
             -- Remove the header
             x = line:find(" ")
             if x ~= nil then
@@ -579,7 +589,7 @@ if Controls then
                     if func == "ProductName" then
                         Controls.model.String = val
                     end
-                elseif path == "/MANAGEMENT/STATUS" then -- Managemnt Status
+                elseif path == "/MANAGEMENT/STATUS" then -- Management Status
                     -- Uptime
                     if func == "UpTime" then
                         --Controls.UpTime.Value = val
@@ -624,6 +634,10 @@ if Controls then
                             --Controls["VideoDestSignal"..p] = (data:sub(5, 5) == "F")
                             -- Connection Status
                             --Controls["VideoDestConnection"..p] = (data:sub(5, 5) == "B" or data:sub(5, 5) == "F")
+                        end
+                    elseif func == "DestinationConnectionList" then
+                        for p, data in ipairs(split(val, ";")) do
+                            matrix_feedback(data:sub(2,-1),p)
                         end
                     end
                 end
