@@ -25,9 +25,8 @@ function GetColor(props)
     return Colors.lightware_red
 end
 
-local MaxSources = 4
-input_count = 16
-output_count = 16
+input_count = 8
+output_count = 8
 -- We can let users determine some of the plugin properties by exposing them here
 -- While this function can be very useful, it is completely optional and not always needed.
 -- If no Properties are set here, only the position and fill properties of your plugin will show in the Properties pane
@@ -39,12 +38,17 @@ function GetProperties()
             Value = "127.0.0.1"
         },
         {
-            Name = "Source Count",
-            Type = "integer",
-            Min = 2,
-            Max = MaxSources,
-            Value = 4
-        }
+            Name = "Model",
+            Type = "enum",
+            Choices = {"MMX4x2","MMX6x2","MMX8x4","MMX8x8"},
+            Value = "MMX4x2"
+        },
+        --[[ -- for future use
+            {
+            Name = "Independent Audio",
+            Type = "boolean",
+            Value = false
+        },]]
     }
     return props
 end
@@ -121,7 +125,7 @@ function GetControls(props)
             ControlType = "Indicator",
             IndicatorType = "Led",
             PinStyle = "Output",
-            Count = MaxSources,
+            Count = input_count,
             UserPin = true
         },
         --[[-- Destination Ports
@@ -130,7 +134,7 @@ function GetControls(props)
             ControlType = "Knob",
             ControlUnit = "Integer",
             Min = 1,
-            Max = MaxSources,
+            Max = input_count,
             PinStyle = "Both",
             Count = 2,
             UserPin = true
@@ -140,7 +144,7 @@ function GetControls(props)
             ControlType = "Knob",
             ControlUnit = "Integer",
             Min = 1,
-            Max = MaxSources,
+            Max = input_count,
             PinStyle = "Input",
             Count = 1
             --UserPin = true
@@ -187,8 +191,7 @@ end
 function GetControlLayout(props)
     local layout = {}
 
-    input_count, output_count = 4,2 -- this needs to become an If statement based on model/props
-    input_count = props["Source Count"].Value
+    input_count,output_count = string.match(props["Model"].Value, "MMX(%d+)x(%d+)")
     local title_size = {224,32}
     local btn_size = {32,24}
     local matrix_groupbox_position = {0, 9*btn_size[2]}
@@ -561,7 +564,7 @@ if Controls then
         -- Read out lines from the buffer
         line = conn:ReadLine(TcpSocket.EOL.Any)
         while (line ~= nil) do
-            print(line)
+            --print(line)
             -- Remove the header
             x = line:find(" ")
             if x ~= nil then
