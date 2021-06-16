@@ -2,9 +2,9 @@
 
 QSC Q-Sys plugin for [Lightware](https://lightware.com/) Matrix devices via IP.
 
-Developed against the MMX-4x2 Hdmi using the LW3 protocol. Can be expanded on.
+Developed against the MMX-4x2 Hdmi using the LW3 protocol.
 
-Current Features
+## Current Features
 
 - Metadata Extraction
 - Input signal detection
