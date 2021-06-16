@@ -8,5 +8,5 @@ Developed against the MMX-4x2 Hdmi using the LW3 protocol.
 
 - Metadata Extraction
 - Input signal detection
-- Source Switching (Per output)
+- Source Switching (per output)
 - Output Mute
