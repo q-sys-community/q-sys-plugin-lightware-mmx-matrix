@@ -1,8 +1,8 @@
-# Lightware Matrix
+# Lightware MMX Matrix
 
-QSC Q-Sys plugin for Lightware Matrix devices via IP.
+QSC Q-Sys plugin for Lightware MMX series matrix devices via IP.
 
-Developed against the MMX-4x2 Hdmi using the LW3 protocol.
+Developed against the MMX4x2 Hdmi using the LW3 protocol.
 
 ## Current Features
 

@@ -2,10 +2,10 @@
 <!-- Initially generated manually using `nuget spec`-->
 <package >
   <metadata>
-    <id>Lightware-Matrix</id>
+    <id>Lightware-MMX-Matrix</id>
     <version>0.0.0.0-master</version>
-    <title>Lightware Matrix</title>
-    <authors>Solo Works London</authors>
+    <title>Lightware MMX Matrix</title>
+    <authors>Carrier Labs</authors>
     <owners>Q-Sys Community</owners>
     <license type="expression">GPL-3.0-or-later</license>
     <projectUrl>https://github.com/q-sys-community/q-sys-plugin-lightware-matrix</projectUrl>
@@ -13,9 +13,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Package description</description>
     <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
-    <copyright>Copyright 2019</copyright>
-    <tags>Lightware Matrix</tags>
-    <summary>A control plugin for Lightware matrix devices</summary>
+    <copyright>Copyright 2022</copyright>
+    <tags>Lightware MMX Matrix</tags>
+    <summary>A control plugin for Lightware MMX series matrix devices</summary>
   </metadata>
   <files>
     <file src="content\*" target="" />
