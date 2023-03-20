@@ -40,7 +40,7 @@ function GetProperties()
         {
             Name = "Model",
             Type = "enum",
-            Choices = {"MMX4x2", "MMX6x2", "MMX8x4", "MMX8x8",},
+            Choices = {"MMX4x2", "MMX6x2", "MMX8x4", "MMX8x8"},
             Value = "MMX4x2"
         }
         --[[ -- for future use
@@ -182,7 +182,7 @@ function GetControlLayout(props)
 
     local title_size = {224, 32}
     local btn_size = {32, 24}
-    local status_groupbox_size = {title_size[1], 7*btn_size[2]}
+    local status_groupbox_size = {title_size[1], 7 * btn_size[2]}
     local matrix_groupbox_position = {0, title_size[2] + status_groupbox_size[2] + (0.5 * btn_size[2])}
     local matrix_groupbox_size = {
         72 + (output_count * btn_size[1]),
@@ -446,6 +446,7 @@ if Controls then
 
     function fnPoll()
         -- No need for Polling - tested device returns UpTime each second
+        fnSend("CALL", "/CTRL/VARS/V1:scanf(/MANAGEMENT/STATUS.CpuTemperature)")
         --fnSend("GET", "/.*")
     end
 
@@ -466,7 +467,7 @@ if Controls then
             Controls["input_" .. i .. "-output_" .. outp].Boolean = i == tonumber(inp)
         end
     end
-    
+
     function tie_command(inp, outp)
         fnSend("CALL", string.format("/MEDIA/VIDEO/XP:switch(I%1i:O%1i)", inp, outp))
     end
@@ -523,7 +524,7 @@ if Controls then
         -- Read out lines from the buffer
         line = conn:ReadLine(TcpSocket.EOL.Any)
         while (line ~= nil) do
-            --print(line)
+            print(line)
             -- Remove the header
             x = line:find(" ")
             if x ~= nil then
@@ -634,8 +635,10 @@ if Controls then
     for i = 1, output_count do
         for p = 1, input_count do
             Controls["input_" .. p .. "-output_" .. i].EventHandler = function()
-                Controls["output_" .. i].String = tostring(p)
-                tie_command(Controls["output_" .. i].String, i)
+                if Controls["input_" .. p .. "-output_" .. i].Boolean then
+                    Controls["output_" .. i].String = tostring(p)
+                    tie_command(Controls["output_" .. i].String, i)
+                end
             end
         end
     end
